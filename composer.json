@@ -1,9 +1,11 @@
 {
     "name": "beneaththesurfacelabs/universal-factory",
-    "description": "Laravel-style Factory classes for non-Eloquent classes",
+    "description": "Laravel-style Factories for non-Eloquent classes",
     "keywords": [
         "BeneathTheSurfaceLabs",
-        "laravel",
+        "Laravel",
+        "factory",
+        "factories",
         "universal-factory"
     ],
     "homepage": "https://github.com/beneaththesurfacelabs/universal-factory",
