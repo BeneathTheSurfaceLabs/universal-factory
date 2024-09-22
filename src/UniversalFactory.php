@@ -3,12 +3,12 @@
 namespace BeneathTheSurfaceLabs\UniversalFactory;
 
 use Faker\Generator;
-use Illuminate\Support\Str;
 use Faker\Generator as Faker;
-use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * @template TClass
@@ -142,9 +142,9 @@ abstract class UniversalFactory
      */
     protected function callAfterMaking(Collection $instances): void
     {
-        $instances->each(function ($model) {
-            $this->afterMaking->each(function ($callback) use ($model) {
-                $callback($model);
+        $instances->each(function ($class) {
+            $this->afterMaking->each(function ($callback) use ($class) {
+                $callback($class);
             });
         });
     }
@@ -223,6 +223,9 @@ abstract class UniversalFactory
     {
         return collect($definition)
             ->map(function ($attribute, $key) use (&$definition) {
+                if ($attribute instanceof UniversalFactory) {
+                    $attribute = $attribute->make();
+                }
                 if (is_callable($attribute) && ! is_string($attribute) && ! is_array($attribute)) {
                     $attribute = $attribute($definition);
                 }
@@ -258,25 +261,7 @@ abstract class UniversalFactory
     public function newClass(array $attributes = [])
     {
         $class = $this->className();
-        $constructor = (new \ReflectionClass($class))->getConstructor();
-
-        return $constructor
-            ? new $class(...$this->resolveParameters($constructor, $attributes))
-            : new $class;
-    }
-
-    /**
-     * Resolve parameters for the class constructor from the given attributes.
-     *
-     * @param  array<string, mixed>  $attributes
-     * @return array<int, mixed>
-     */
-    protected function resolveParameters(\ReflectionMethod $constructor, array $attributes): array
-    {
-
-        return collect($constructor->getParameters())
-            ->map(fn ($param) => $attributes[$param->getName()] ?? null)
-            ->all();
+        return app()->makeWith($class, $attributes);
     }
 
     /**
@@ -295,9 +280,11 @@ abstract class UniversalFactory
 
             $appNamespace = static::appNamespace();
 
-            return (class_exists($appNamespace.$namespacedFactoryBasename)) ?
-                $appNamespace.$namespacedFactoryBasename :
-                $appNamespace.$factoryBasename;
+            return match (true) {
+                class_exists($namespacedFactoryBasename) => $namespacedFactoryBasename,
+                class_exists($appNamespace.$factoryBasename) => $appNamespace.$factoryBasename,
+                default => throw new \Exception('Cannot locate base class for your factory!')
+            };
         };
 
         return $this->class ?? $resolver($this);
@@ -358,31 +345,26 @@ abstract class UniversalFactory
             // Step 1: Use ReflectionClass to get the basename (without the namespace)
             $shortClassName = class_basename($className);
 
-            // Step 2: Check if the factory exists in the configured namespace without 'Factory' suffix
-            $factoryClass = static::$namespace . $shortClassName;
+            $factoryClass = static::$namespace.$shortClassName;
             if (class_exists($factoryClass)) {
                 return $factoryClass;
             }
 
-            // Step 3: Check if the factory exists in the configured namespace with 'Factory' appended
-            $factoryClassWithSuffix = static::$namespace . $shortClassName . 'Factory';
+            $factoryClassWithSuffix = static::$namespace.$shortClassName.'Factory';
             if (class_exists($factoryClassWithSuffix)) {
                 return $factoryClassWithSuffix;
             }
 
-            // Step 4: Fallback to the original class's namespace, appending 'Factory'
-            $sameNamespaceFactory = $className . 'Factory';
+            $sameNamespaceFactory = $className.'Factory';
             if (class_exists($sameNamespaceFactory)) {
                 return $sameNamespaceFactory;
             }
 
-            // If none of the above, return the class with 'Factory' appended in the configured namespace
-            return static::$namespace . $shortClassName . 'Factory';
+            return static::$namespace.$shortClassName.'Factory';
         };
 
         return $resolver($className);
     }
-
 
     /**
      * Get the application namespace for the application.
