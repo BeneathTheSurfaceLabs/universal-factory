@@ -13,6 +13,7 @@ class UserInfo
         public string $email,
         public \DateTime $birthday,
         public int $age,
+        public ProfileData $profileData,
     ) {}
 
     public static function newFactory(): UserInfoFactory

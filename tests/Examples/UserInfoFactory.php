@@ -20,22 +20,26 @@ class UserInfoFactory extends UniversalFactory
             'email' => $this->faker->email,
             'birthday' => $this->faker->dateTime,
             'age' => $this->faker->numberBetween(21, 40),
+            'profileData' => ProfileData::factory(),
         ];
     }
 
-    public function age(int $age): self
+    public function configure(): static
     {
-        return $this->state(function (array $attributes) {
-            return $attributes;
-        })->afterMaking(fn (UserInfo $exampleClass) => $exampleClass->age = $age);
+        $this->afterMaking(fn (UserInfo $userInfo) => $userInfo->profileData = ProfileData::factory()->withProfileFor($userInfo)->make()
+        );
+
+        return $this;
     }
 
     public function unrestrictedAge(): self
     {
-        return $this->afterMaking(function (UserInfo $exampleClass) {
+        return $this->state(function (array $attributes) {
             $birthday = fake()->dateTimeBetween('now', '-21 years');
-            $exampleClass->birthday = $birthday;
-            $exampleClass->age = (new \DateTime)->diff($birthday)->y;
+            $attributes['birthday'] = $birthday;
+            $attributes['age'] = (new \DateTime)->diff($birthday)->y;
+
+            return $attributes;
         });
     }
 
