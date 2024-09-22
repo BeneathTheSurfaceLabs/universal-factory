@@ -7,8 +7,6 @@ use Illuminate\Support\Str;
 
 class ProfileDataFactory extends UniversalFactory
 {
-    protected $class = ProfileData::class;
-
     /**
      * Define the class's default attributes.
      *
