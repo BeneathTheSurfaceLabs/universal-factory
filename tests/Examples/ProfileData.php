@@ -17,9 +17,4 @@ class ProfileData
         public ?string $githubAvatarUrl,
         public ?string $personalUrl,
     ) {}
-
-    public static function newFactory(): ProfileDataFactory
-    {
-        return ProfileDataFactory::new();
-    }
 }
