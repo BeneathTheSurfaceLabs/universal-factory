@@ -99,14 +99,6 @@ abstract class UniversalFactory
     }
 
     /**
-     * Get a new factory instance for the given number of models.
-     */
-    public static function times(int $count): static
-    {
-        return static::new()->count($count);
-    }
-
-    /**
      * Specify how many classes should be generated.
      */
     public function count(?int $count): static
@@ -163,14 +155,10 @@ abstract class UniversalFactory
             return $this->state($attributes)->make([]);
         }
 
-        if ($this->count === null) {
+        if ($this->count === null || $this->count < 1) {
             return tap($this->makeInstance(), function ($instance) {
                 $this->callAfterMaking(collect([$instance]));
             });
-        }
-
-        if ($this->count < 1) {
-            return collect($this->newClass());
         }
 
         $instances = collect(range(1, $this->count))->map(fn () => $this->makeInstance());
@@ -261,6 +249,7 @@ abstract class UniversalFactory
     public function newClass(array $attributes = [])
     {
         $class = $this->className();
+
         return app()->makeWith($class, $attributes);
     }
 
@@ -271,7 +260,7 @@ abstract class UniversalFactory
      */
     public function className(): string
     {
-        $resolver = function (self $factory) {
+        $resolver = static::$classNameResolver ?? function (self $factory) {
             $namespacedFactoryBasename = Str::replaceLast(
                 'Factory', '', Str::replaceFirst(static::$namespace, '', get_class($factory))
             );
