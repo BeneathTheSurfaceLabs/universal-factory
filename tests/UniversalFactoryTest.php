@@ -1,6 +1,7 @@
 <?php
 
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
 use Illuminate\Support\Str;
@@ -10,7 +11,7 @@ it('Can Create A New Factory Instance', function () {
     expect($factory)->toBeInstanceOf(UserInfoFactory::class);
 });
 
-it('Can Make A New Class via Factory With Empty State', function () {
+it('Can Make A New Class With Empty State', function () {
     $factory = UserInfo::factory();
     $result = $factory->make();
     expect($result->age)->toBeBetween(21, 40);
@@ -24,7 +25,7 @@ it('Can Make A New Class via Factory With Empty State', function () {
 
 });
 
-it('Can Make A Many New Classes via Factory With Empty State', function () {
+it('Can Make Many New Classes With Empty State', function () {
     $factory = UserInfo::factory();
     $count = 5;
     $result = $factory->count($count)->make();
@@ -38,7 +39,27 @@ it('Can Make A Many New Classes via Factory With Empty State', function () {
     });
 });
 
-it('Can Make A Many New Classes via Factory With Mixed State', function () {
+it('Can Make A New Class With State Overrides via factory()', function () {
+    $factory = UserInfo::factory(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
+    $result = $factory->make();
+
+    expect($result->age)->toBeBetween(21, 40);
+    expect($result->name)->toEqual('Eric Cartman');
+    expect($result->email)->toEqual('eric@southparkcows.com');
+    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+});
+
+it('Can Make A New Class With State Overrides via make()', function () {
+    $factory = UserInfo::factory();
+    $result = $factory->make(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
+
+    expect($result->age)->toBeBetween(21, 40);
+    expect($result->name)->toEqual('Eric Cartman');
+    expect($result->email)->toEqual('eric@southparkcows.com');
+    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+});
+
+it('Can Make A Many New Classes With State Overrides via factory()', function () {
     $factory = UserInfo::factory(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
     $count = 5;
     $result = $factory->count($count)->make();
@@ -51,14 +72,17 @@ it('Can Make A Many New Classes via Factory With Mixed State', function () {
     });
 });
 
-it('Can Make A New Class via Factory With Mixed State', function () {
-    $factory = UserInfo::factory(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
-    $result = $factory->make();
-
-    expect($result->age)->toBeBetween(21, 40);
-    expect($result->name)->toEqual('Eric Cartman');
-    expect($result->email)->toEqual('eric@southparkcows.com');
-    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+it('Can Make A Many New Classes With State Overrides via make()', function () {
+    $factory = UserInfo::factory();
+    $count = 5;
+    $result = $factory->count($count)->make(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
+    expect($result->count())->toEqual($count);
+    $result->each(function (UserInfo $result) {
+        expect($result->age)->toBeBetween(21, 40);
+        expect($result->name)->toEqual('Eric Cartman');
+        expect($result->email)->toEqual('eric@southparkcows.com');
+        expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+    });
 });
 
 it('Can Make A New Class via Factory With State Methods', function () {
@@ -75,6 +99,7 @@ it('It Can Resolve The Base Classes From The Factories', function (string $facto
     expect($className)->toEqual($expectedClassName);
 })->with([
     'UserInfoFactory' => [UserInfoFactory::class, UserInfo::class],
+    'ProfileDataFactory' => [ProfileDataFactory::class, ProfileData::class],
 ]);
 
 it('It Can Resolve The Factory Class From The Base Classes', function (string $className, string $expectedFactoryClassName) {
@@ -82,4 +107,14 @@ it('It Can Resolve The Factory Class From The Base Classes', function (string $c
     expect($factory)->toEqual($expectedFactoryClassName);
 })->with([
     'UserInfo' => [UserInfo::class, UserInfoFactory::class],
+    'ProfileData' => [ProfileData::class, ProfileDataFactory::class],
+]);
+
+it('It Can Set A Custom Resolver For Guessing Class Names', function (string $className) {
+    $factory = $className::factory();
+    $factory->guessClassNamesUsing(fn ($factory) => $className);
+    expect($factory->className())->toEqual($className);
+})->with([
+    'UserInfo' => [UserInfo::class],
+    'ProfileData' => [ProfileData::class],
 ]);
