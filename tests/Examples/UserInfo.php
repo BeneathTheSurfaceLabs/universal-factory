@@ -9,6 +9,7 @@ class UserInfo
     use HasUniversalFactory;
 
     public function __construct(
+        public string $externalId,
         public string $name,
         public string $email,
         public \DateTime $birthday,

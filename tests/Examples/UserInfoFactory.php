@@ -16,6 +16,7 @@ class UserInfoFactory extends UniversalFactory
     public function definition(): array
     {
         return [
+            'externalId' => fn () => substr(str_replace(['+', '.', 'E'], '', microtime(true)), -10),
             'name' => $this->faker->name,
             'email' => $this->faker->email,
             'birthday' => $this->faker->dateTime,
