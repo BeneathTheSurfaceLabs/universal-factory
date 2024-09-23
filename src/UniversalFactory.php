@@ -152,7 +152,7 @@ abstract class UniversalFactory
     public function make($attributes = [])
     {
         if (! empty($attributes)) {
-            return $this->state($attributes)->make([]);
+            return $this->state($attributes)->make();
         }
 
         if ($this->count === null || $this->count < 1) {
@@ -177,7 +177,7 @@ abstract class UniversalFactory
      */
     protected function makeInstance()
     {
-        return tap($this->newClass($this->getExpandedAttributes()), function ($instance) {});
+        return $this->newClass($this->getExpandedAttributes());
     }
 
     /**
@@ -193,9 +193,8 @@ abstract class UniversalFactory
      */
     protected function getRawAttributes(): array
     {
-        return $this->states->pipe(function ($states) {
-            return $states;
-        })->reduce(function ($carry, $state) {
+        return $this->states->reduce(function ($carry, $state) {
+
             if ($state instanceof \Closure) {
                 $state = $state->bindTo($this);
             }
@@ -249,7 +248,6 @@ abstract class UniversalFactory
     public function newClass(array $attributes = [])
     {
         $class = $this->className();
-
         return app()->makeWith($class, $attributes);
     }
 
@@ -282,9 +280,9 @@ abstract class UniversalFactory
     /**
      * Specify the callback that should be invoked to guess class names based on factory names.
      *
-     * @param  callable(self): class-string<TClass>  $callback
+     * @param  null|callable(self): class-string<TClass>  $callback
      */
-    public static function guessClassNamesUsing(callable $callback): void
+    public static function guessClassNamesUsing(?callable $callback): void
     {
         static::$classNameResolver = $callback;
     }
