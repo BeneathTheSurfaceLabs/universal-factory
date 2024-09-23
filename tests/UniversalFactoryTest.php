@@ -39,7 +39,6 @@ it('Can Make Many New Classes With Empty State', function () {
     });
 });
 
-
 it('Can Make A New Class With State Overrides via factory()', function () {
     $factory = UserInfo::factory(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
     $result = $factory->make();
@@ -49,7 +48,6 @@ it('Can Make A New Class With State Overrides via factory()', function () {
     expect($result->email)->toEqual('eric@southparkcows.com');
     expect($result->birthday)->toBeInstanceOf(\DateTime::class);
 });
-
 
 it('Can Make A New Class With State Overrides via make()', function () {
     $factory = UserInfo::factory();
@@ -73,7 +71,6 @@ it('Can Make A Many New Classes With State Overrides via factory()', function ()
         expect($result->birthday)->toBeInstanceOf(\DateTime::class);
     });
 });
-
 
 it('Can Make A Many New Classes With State Overrides via make()', function () {
     $factory = UserInfo::factory();

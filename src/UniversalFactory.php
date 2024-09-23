@@ -248,6 +248,7 @@ abstract class UniversalFactory
     public function newClass(array $attributes = [])
     {
         $class = $this->className();
+
         return app()->makeWith($class, $attributes);
     }
 

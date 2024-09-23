@@ -27,8 +27,7 @@ class UserInfoFactory extends UniversalFactory
 
     public function configure(): static
     {
-        $this->afterMaking(fn (UserInfo $userInfo) => $userInfo->profileData = ProfileData::factory()->withProfileFor($userInfo)->make()
-        );
+        $this->afterMaking(fn (UserInfo $userInfo) => $userInfo->profileData = ProfileData::factory()->withProfileFor($userInfo)->make());
 
         return $this;
     }
