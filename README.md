@@ -5,7 +5,10 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/beneaththesurfacelabs/universal-factory/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/beneaththesurfacelabs/universal-factory/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/beneaththesurfacelabs/universal-factory.svg?style=flat-square)](https://packagist.org/packages/beneaththesurfacelabs/universal-factory)
 
-[![https://nickpoulos.info](https://raw.githubusercontent.com/BeneathTheSurfaceLabs/universal-factory/refs/heads/main/art/logo.png)](https://nickpoulos.info)
+
+<p align="center">
+    <a><img border="0" src="https://raw.githubusercontent.com/BeneathTheSurfaceLabs/universal-factory/refs/heads/main/art/logo.png" width="50%" style="border: 0; outline: 0;"></a>
+</p>
 
 Create Laravel-style Factory classes to quickly generate test data within your applications
 
