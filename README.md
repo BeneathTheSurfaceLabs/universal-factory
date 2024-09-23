@@ -6,9 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/beneaththesurfacelabs/universal-factory.svg?style=flat-square)](https://packagist.org/packages/beneaththesurfacelabs/universal-factory)
 
 
-<p align="center">
-    <a><img border="0" src="https://raw.githubusercontent.com/BeneathTheSurfaceLabs/universal-factory/refs/heads/main/art/logo.png" width="50%" style="border: 0; outline: 0;"></a>
-</p>
+<p align="center"><a href="https://nickpoulos.info" target="_blank"><img src="https://github.com/BeneathTheSurfaceLabs/universal-factory/blob/main/art/logo.png?raw=true" width="400" alt="Gridz Logo"></a></p>
 
 Create Laravel-style Factory classes to quickly generate test data within your applications
 
