@@ -1,11 +1,5 @@
 # Universal Factories
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/beneaththesurfacelabs/universal-factory.svg?style=flat-square)](https://packagist.org/packages/beneaththesurfacelabs/universal-factory)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/beneaththesurfacelabs/universal-factory/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/beneaththesurfacelabs/universal-factory/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/beneaththesurfacelabs/universal-factory/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/beneaththesurfacelabs/universal-factory/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/beneaththesurfacelabs/universal-factory.svg?style=flat-square)](https://packagist.org/packages/beneaththesurfacelabs/universal-factory)
-
-
 <p align="center"><a href="https://nickpoulos.info" target="_blank"><img src="https://github.com/BeneathTheSurfaceLabs/universal-factory/blob/main/art/logo.png?raw=true" width="400" alt="Gridz Logo"></a></p>
 
 Create Laravel-style Factory classes to quickly generate test data within your applications
