@@ -5,6 +5,10 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/beneaththesurfacelabs/universal-factory/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/beneaththesurfacelabs/universal-factory/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/beneaththesurfacelabs/universal-factory.svg?style=flat-square)](https://packagist.org/packages/beneaththesurfacelabs/universal-factory)
 
+<p align="center">
+    <img src="https://raw.githubusercontent.com/BeneathTheSurfaceLabs/universal-factory/refs/heads/main/art/logo.png">
+</p>
+
 Create Laravel-style Factory classes to quickly generate test data within your applications
 
 ## Why?
@@ -62,7 +66,7 @@ To use them, perform the following steps:
   - Callbacks
   - Integration With Faker
 
-
+### Example Classes and their Universal Factories
 ```php
 <?php
 
@@ -73,8 +77,24 @@ use BeneathTheSurfaceLabs\UniversalFactory\Traits\HasUniversalFactory;
 class UserInfo
 {
     use HasUniversalFactory;
+
+    public function __construct(
+        public string $externalId,
+        public string $name,
+        public string $email,
+        public \DateTime $birthday,
+        public int $age,
+        public ProfileData $profileData,
+    ) {}
     
-    ...
+    // If the below method is omitted, the package will look for a class named
+    // UserInfoFactory within the same namespace (BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples)
+    public static function newFactory(): UserInfoFactory
+    {
+        return UserInfoFactory::new();
+    }
+}
+
 
 ```
 
