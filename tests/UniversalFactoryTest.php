@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Artisan;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 
-it('tests stuff', function() {
+it('tests stuff', function () {
 
     try {
         Artisan::call('make:universal-factory', [

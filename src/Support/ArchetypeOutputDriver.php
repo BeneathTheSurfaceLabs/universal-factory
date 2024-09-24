@@ -45,7 +45,7 @@ class ArchetypeOutputDriver implements OutputInterface
 
     public function absolutePath(): string
     {
-        return $this->absoluteDir() . "/$this->filename" . ($this->extension ? ".$this->extension" : "");
+        return $this->absoluteDir()."/$this->filename".($this->extension ? ".$this->extension" : '');
     }
 
     public function setDefaultsFrom($inputDriver)
@@ -65,7 +65,7 @@ class ArchetypeOutputDriver implements OutputInterface
     protected function extractPathProperties(string $path): void
     {
         // If no path is supplied, we will rely on default/mirrored input settings
-        if (!$path) {
+        if (! $path) {
             return;
         }
 
@@ -81,11 +81,13 @@ class ArchetypeOutputDriver implements OutputInterface
         return collect([
             $this->root['root'],
             $this->relativeDir,
-        ])->filter()->join("/");
+        ])->filter()->join('/');
     }
 
     protected function ensureFilenameIsSet(): void
     {
-        if(!$this->filename) throw new TypeError('Could not find a filename');
+        if (! $this->filename) {
+            throw new TypeError('Could not find a filename');
+        }
     }
 }

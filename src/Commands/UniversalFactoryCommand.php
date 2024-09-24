@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class UniversalFactoryCommand extends Command
 {
     protected $signature = 'make:universal-factory {factoryClass} {--for=}';
+
     protected $description = 'Generate a universal factory class for a given class and modify the class to use it';
 
     public function handle()
@@ -16,8 +17,9 @@ class UniversalFactoryCommand extends Command
         $forClass = $this->option('for');
         $namespace = config('universal-factory.default_namespace');
 
-        if (!$forClass) {
+        if (! $forClass) {
             $this->error('You must specify the --for= option with the class the factory is for.');
+
             return;
         }
 
@@ -28,10 +30,11 @@ class UniversalFactoryCommand extends Command
 
     protected function generateFactoryClass($factoryClass, $forClass, $namespace)
     {
-        $path = app_path(str_replace('\\', '/', $namespace) . "/{$factoryClass}.php");
+        $path = app_path(str_replace('\\', '/', $namespace)."/{$factoryClass}.php");
 
         if (file_exists($path)) {
             $this->error("Factory {$factoryClass} already exists at {$path}!");
+
             return;
         }
 
@@ -49,16 +52,18 @@ class UniversalFactoryCommand extends Command
 
     protected function getStub()
     {
-        return file_get_contents(__DIR__ . '/stubs/universal-factory.stub');
+        return file_get_contents(__DIR__.'/stubs/universal-factory.stub');
     }
 
     protected function getClassFilePath($className)
     {
         try {
             $reflection = new \ReflectionClass($className);
+
             return $reflection->getFileName();
         } catch (\ReflectionException $e) {
             $this->error("Class {$className} could not be found.");
+
             return null;
         }
     }
