@@ -62,11 +62,15 @@ To use them, perform the following steps:
 - Add the HasUniversalFactory trait to your class.
 - Create your factory class using the included Artisan command, or by hand
 - Use the same features you know and love from Laravel's Eloquent Factories
-  - States
-  - Callbacks
+  - Factory States
+  - Callbacks such as afterMaking
+  - Nested Factory Definitions
   - Integration With Faker
 
 ### Example Classes and their Universal Factories
+
+Example Class UserInfo:
+
 ```php
 <?php
 
@@ -87,8 +91,8 @@ class UserInfo
         public ProfileData $profileData,
     ) {}
     
-    // If the below method is omitted, the package will look for a class named
-    // UserInfoFactory within the same namespace (BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples)
+    // If the below method is omitted, the package will look for a class named UserInfoFactory
+    // within the same namespace as this class -- BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples
     public static function newFactory(): UserInfoFactory
     {
         return UserInfoFactory::new();
@@ -98,13 +102,7 @@ class UserInfo
 
 ```
 
-- Create your factory using the included Artisan command:
-
-`php artisan make:universal-factory UserInfoFactory --class=App\MyClass\TestData --namespace=App\MyClass\`
-
-It will create a file similar to the one below, within the `default_namespace` from our config file. 
-
-If you do not provide the factory name or classname, the package will attempt to locate it for you based on a few different naming conventions. You can always choose to override these naming conventions and provide your own class names. 
+Example Factory Class UserInfoFactory: 
 
 ```php
 <?php
@@ -115,9 +113,13 @@ use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
 
 class UserInfoFactory extends UniversalFactory
 {
-    // If you choose to omit this property, the package will look
-    // for a corresponding UserInfo class within the same namespace
-    // as your factory
+    //
+    // if this property is omitted, the package will check for a class with the same name,
+    // (minus 'Factory') within the same namespace as the factory 
+    //  
+    // Ex. \BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory will look 
+    // for a class \BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo
+    // 
     protected $class = UserInfo::class;
 
     /**
@@ -128,29 +130,37 @@ class UserInfoFactory extends UniversalFactory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            
+            'externalId' => fn () => substr(str_replace(['+', '.', 'E'], '', microtime(true)), -10), // functional attribute definitions
+            'name' => $this->faker->name, // typical faker usage
             'email' => $this->faker->email,
             'birthday' => $this->faker->dateTime,
             'age' => $this->faker->numberBetween(21, 40),
+            'profileData' => ProfileData::factory(), // nested factory within definitions
         ];
     }
 
-    public function age(int $age): self
+    public function configure(): static
     {
-        return $this->afterMaking(fn (UserInfo $exampleClass) => $exampleClass->age = $age);
+        // add global callbacks within the configure() method here
+        // or add state specific callbacks within state methods
+        $this->afterMaking(fn (UserInfo $userInfo) => $userInfo->profileData = ProfileData::factory()->withProfileFor($userInfo)->make());
+
+        return $this;
     }
-    
-    // you can use afterMaking() within state methods for more direct control
+
     public function unrestrictedAge(): self
     {
-        return $this->afterMaking(function (UserInfo $exampleClass) {
+        // create state-specific methods
+        return $this->state(function (array $attributes) {
             $birthday = fake()->dateTimeBetween('now', '-21 years');
-            $exampleClass->birthday = $birthday;
-            $exampleClass->age = (new \DateTime)->diff($birthday)->y;
+            $attributes['birthday'] = $birthday;
+            $attributes['age'] = (new \DateTime)->diff($birthday)->y;
+
+            return $attributes;
         });
     }
-    
-    // a more typical way to use state methods
+
     public function restrictedAge(): self
     {
         return $this->state(function (array $attributes) {
@@ -182,13 +192,6 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Security Vulnerabilities
 
 Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-
-## Contact me
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/universal-factory.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/universal-factory)
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
 ## Credits
 
