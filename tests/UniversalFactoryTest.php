@@ -1,10 +1,24 @@
 <?php
 
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Artisan;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
+
+it('tests stuff', function() {
+
+    try {
+        Artisan::call('make:universal-factory', [
+            'factoryClass' => 'UserMoopsFactory',
+            '--for' => UserInfo::class,
+        ]);
+
+    } catch (\Exception $e) {
+        dd($e);
+    }
+});
 
 it('Can Create A New Factory Instance', function () {
     $factory = UserInfo::factory();
