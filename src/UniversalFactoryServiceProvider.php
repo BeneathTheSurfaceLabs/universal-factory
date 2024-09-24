@@ -2,9 +2,9 @@
 
 namespace BeneathTheSurfaceLabs\UniversalFactory;
 
-use BeneathTheSurfaceLabs\UniversalFactory\Commands\UniversalFactoryCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use BeneathTheSurfaceLabs\UniversalFactory\Commands\UniversalFactoryCommand;
 
 class UniversalFactoryServiceProvider extends PackageServiceProvider
 {
