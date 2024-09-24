@@ -1,0 +1,22 @@
+<?php
+
+namespace $namespace
+
+use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
+
+class {{ factoryClass }} extends UniversalFactory
+{
+    protected $class = {{for}}::class;
+
+    /**
+     * Define the class's default attributes.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+
+        ];
+    }
+}
