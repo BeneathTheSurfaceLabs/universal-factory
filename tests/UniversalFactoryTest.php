@@ -4,6 +4,7 @@ use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 
 it('Can Create A New Factory Instance', function () {
@@ -119,3 +120,9 @@ it('It Can Set A Custom Resolver For Guessing Class Names', function (string $cl
     'UserInfo' => [UserInfo::class],
     'ProfileData' => [ProfileData::class],
 ]);
+
+it('It Can Set A Custom Method Name For Universal Factory', function () {
+    Config::set('universal-factory.method_name', 'fake');
+    $factory = UserInfo::fake();
+    expect($factory)->toBeInstanceOf(UserInfoFactory::class);
+});
