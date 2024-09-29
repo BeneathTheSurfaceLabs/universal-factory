@@ -9,6 +9,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use BeneathTheSurfaceLabs\UniversalFactory\Enum\ClassConstructionStrategy;
 
 /**
  * @template TClass
@@ -21,6 +22,8 @@ abstract class UniversalFactory
      * @var class-string<TClass>|null
      */
     protected $class;
+
+    protected ClassConstructionStrategy $classConstructionStrategy = ClassConstructionStrategy::CONTAINER_BASED;
 
     protected ?int $count = null;
 
@@ -243,13 +246,16 @@ abstract class UniversalFactory
      * @param  array<string, mixed>  $attributes
      * @return TClass
      *
-     * @throws \ReflectionException
+     * @throws BindingResolutionException
      */
     public function newClass(array $attributes = [])
     {
         $class = $this->className();
 
-        return app()->makeWith($class, $attributes);
+        return match($this->classConstructionStrategy) {
+            ClassConstructionStrategy::ARRAY_BASED => new $class($attributes),
+            ClassConstructionStrategy::CONTAINER_BASED =>  app()->makeWith($class, $attributes),
+        };
     }
 
     /**
@@ -352,6 +358,12 @@ abstract class UniversalFactory
         };
 
         return $resolver($className);
+    }
+
+    public function useConstructionStrategy(ClassConstructionStrategy $strategy): static
+    {
+        $this->classConstructionStrategy = $strategy;
+        return $this;
     }
 
     /**
