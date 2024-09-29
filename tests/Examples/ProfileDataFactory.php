@@ -2,9 +2,9 @@
 
 namespace BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples;
 
-use Illuminate\Support\Str;
-use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
 use BeneathTheSurfaceLabs\UniversalFactory\Enum\ClassConstructionStrategy;
+use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
+use Illuminate\Support\Str;
 
 class ProfileDataFactory extends UniversalFactory
 {
