@@ -1,18 +1,21 @@
 <?php
 
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Config;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
 
-it('Can Create A New Factory Instance', function () {
-    $factory = UserInfo::factory();
-    expect($factory)->toBeInstanceOf(UserInfoFactory::class);
-});
+test('Can Create A New Factory Instance', function (string $class, string $expectedFactoryClass) {
+    $factory = $class::factory();
+    expect($factory)->toBeInstanceOf($expectedFactoryClass);
+})->with([
+    'UserInfo' => [UserInfo::class, UserInfoFactory::class],
+    'ProfileData' => [ProfileData::class, ProfileDataFactory::class],
+]);
 
-it('Can Make A New Class With Empty State', function () {
+test('Can Make A New Class With Empty State', function () {
     $factory = UserInfo::factory();
     $result = $factory->make();
     expect($result->age)->toBeBetween(21, 40);
@@ -26,7 +29,7 @@ it('Can Make A New Class With Empty State', function () {
 
 });
 
-it('Can Make Many New Classes With Empty State', function () {
+test('Can Make Many New Classes With Empty State', function () {
     $factory = UserInfo::factory();
     $count = 5;
     $result = $factory->count($count)->make();
@@ -40,7 +43,7 @@ it('Can Make Many New Classes With Empty State', function () {
     });
 });
 
-it('Can Make A New Class With State Overrides via factory()', function () {
+test('Can Make A New Class With State Overrides via factory()', function () {
     $factory = UserInfo::factory(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
     $result = $factory->make();
 
@@ -50,7 +53,7 @@ it('Can Make A New Class With State Overrides via factory()', function () {
     expect($result->birthday)->toBeInstanceOf(\DateTime::class);
 });
 
-it('Can Make A New Class With State Overrides via make()', function () {
+test('Can Make A New Class With State Overrides via make()', function () {
     $factory = UserInfo::factory();
     $result = $factory->make(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
 
@@ -60,7 +63,7 @@ it('Can Make A New Class With State Overrides via make()', function () {
     expect($result->birthday)->toBeInstanceOf(\DateTime::class);
 });
 
-it('Can Make A Many New Classes With State Overrides via factory()', function () {
+test('Can Make A Many New Classes With State Overrides via factory()', function () {
     $factory = UserInfo::factory(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
     $count = 5;
     $result = $factory->count($count)->make();
@@ -73,7 +76,7 @@ it('Can Make A Many New Classes With State Overrides via factory()', function ()
     });
 });
 
-it('Can Make A Many New Classes With State Overrides via make()', function () {
+test('Can Make A Many New Classes With State Overrides via make()', function () {
     $factory = UserInfo::factory();
     $count = 5;
     $result = $factory->count($count)->make(['name' => 'Eric Cartman', 'email' => 'eric@southparkcows.com']);
@@ -86,7 +89,7 @@ it('Can Make A Many New Classes With State Overrides via make()', function () {
     });
 });
 
-it('Can Make A New Class via Factory With State Methods', function () {
+test('Can Make A New Class via Factory With State Methods', function () {
     $factory = UserInfo::factory()->restrictedAge();
     $result = $factory->make();
     expect($result->age)->toBeBetween(0, 12);
@@ -95,7 +98,7 @@ it('Can Make A New Class via Factory With State Methods', function () {
     expect($result->birthday)->toBeBetween(new DateTime('-12 years'), new DateTime);
 });
 
-it('It Can Resolve The Base Classes From The Factories', function (string $factoryClassName, string $expectedClassName) {
+test('Can Resolve The Base Classes From The Factories', function (string $factoryClassName, string $expectedClassName) {
     $className = app($factoryClassName)->className();
     expect($className)->toEqual($expectedClassName);
 })->with([
@@ -103,7 +106,7 @@ it('It Can Resolve The Base Classes From The Factories', function (string $facto
     'ProfileDataFactory' => [ProfileDataFactory::class, ProfileData::class],
 ]);
 
-it('It Can Resolve The Factory Class From The Base Classes', function (string $className, string $expectedFactoryClassName) {
+test('Can Resolve The Factory Class From The Base Classes', function (string $className, string $expectedFactoryClassName) {
     $factory = $className::factory()::resolveFactoryName($className);
     expect($factory)->toEqual($expectedFactoryClassName);
 })->with([
@@ -111,7 +114,7 @@ it('It Can Resolve The Factory Class From The Base Classes', function (string $c
     'ProfileData' => [ProfileData::class, ProfileDataFactory::class],
 ]);
 
-it('It Can Set A Custom Resolver For Guessing Class Names', function (string $className) {
+test('Can Set A Custom Resolver For Guessing Class Names', function (string $className) {
     $factory = $className::factory();
     $factory->guessClassNamesUsing(fn ($factory) => $className);
     expect($factory->className())->toEqual($className);
@@ -121,8 +124,9 @@ it('It Can Set A Custom Resolver For Guessing Class Names', function (string $cl
     'ProfileData' => [ProfileData::class],
 ]);
 
-it('It Can Set A Custom Method Name For Universal Factory', function () {
+test('Can Set A Custom Method Name For Universal Factory', function () {
     Config::set('universal-factory.method_name', 'fake');
     $factory = UserInfo::fake();
     expect($factory)->toBeInstanceOf(UserInfoFactory::class);
 });
+
