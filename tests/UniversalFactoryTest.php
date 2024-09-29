@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Config;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
-use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
+use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
 test('Can Create A New Factory Instance', function (string $class, string $expectedFactoryClass) {
     $factory = $class::factory();
@@ -129,4 +129,3 @@ test('Can Set A Custom Method Name For Universal Factory', function () {
     $factory = UserInfo::fake();
     expect($factory)->toBeInstanceOf(UserInfoFactory::class);
 });
-

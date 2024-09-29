@@ -2,6 +2,7 @@
 
 namespace BeneathTheSurfaceLabs\UniversalFactory;
 
+use BeneathTheSurfaceLabs\UniversalFactory\Enum\ClassConstructionStrategy;
 use Faker\Generator;
 use Faker\Generator as Faker;
 use Illuminate\Container\Container;
@@ -9,7 +10,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use BeneathTheSurfaceLabs\UniversalFactory\Enum\ClassConstructionStrategy;
 
 /**
  * @template TClass
@@ -252,9 +252,9 @@ abstract class UniversalFactory
     {
         $class = $this->className();
 
-        return match($this->classConstructionStrategy) {
+        return match ($this->classConstructionStrategy) {
             ClassConstructionStrategy::ARRAY_BASED => new $class($attributes),
-            ClassConstructionStrategy::CONTAINER_BASED =>  app()->makeWith($class, $attributes),
+            ClassConstructionStrategy::CONTAINER_BASED => app()->makeWith($class, $attributes),
         };
     }
 
@@ -363,6 +363,7 @@ abstract class UniversalFactory
     public function useConstructionStrategy(ClassConstructionStrategy $strategy): static
     {
         $this->classConstructionStrategy = $strategy;
+
         return $this;
     }
 

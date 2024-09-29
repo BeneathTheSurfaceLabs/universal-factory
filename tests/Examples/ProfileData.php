@@ -9,11 +9,17 @@ class ProfileData
     use HasUniversalFactory;
 
     public ?string $facebookProfileUrl;
+
     public ?string $facebookAvatarUrl;
+
     public ?string $twitterProfileUrl;
+
     public ?string $twitterAvatarUrl;
+
     public ?string $gitHubProfileUrl;
+
     public ?string $githubAvatarUrl;
+
     public ?string $personalUrl;
 
     public function __construct(array $profileData)
