@@ -128,13 +128,14 @@ use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
 
 class UserInfoFactory extends UniversalFactory
 {
-    //
-    // if this property is omitted, the package will check for a class with the same name,
-    // (minus 'Factory') within the same namespace as the factory 
-    //  
-    // Ex. \BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfoFactory will look 
-    // for a class \BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo
-    // 
+    /* 
+       If the 'class' property is omitted, the package will check for a class with the same name
+       (minus 'Factory'), within the same namespace as the factory 
+       
+       In this example, if omitted, the package would look for: 
+       
+       \BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo
+     */ 
     protected $class = UserInfo::class;
 
     /**
@@ -157,8 +158,14 @@ class UserInfoFactory extends UniversalFactory
 
     public function configure(): static
     {
-        // add global callbacks within the configure() method here
-        // or add state specific callbacks within state methods
+        /* 
+            Add global callbacks within the configure() method here,
+            or add state specific callbacks within state methods.
+        
+            Ex. unrestrictedAge() and restrictedAge() below
+        */
+        
+        // This callback would happen anytime this factory was to generate a class
         $this->afterMaking(fn (UserInfo $userInfo) => $userInfo->profileData = ProfileData::factory()->withProfileFor($userInfo)->make());
 
         return $this;
@@ -190,8 +197,127 @@ class UserInfoFactory extends UniversalFactory
 
 ```
 
+## Class Construction
+This package supports a few common strategies to instruct your factory how to construct your classes. Developers can easily override these with their own class construction implementation.
+
+By default, this package will use the `ClassConstructionStrategy::CONTAINER_BASED` strategy, which takes advantage of the Laravel container to attempt to construct your class.  
+
+The other strategy assumes your class constructor takes an array of parameters, which will map to your class properties. This is similar to how Eloquent models or Laravel Data classes are constructed.
+
+Of course, if your class requires something more custom or complex to be constructed, you can easily override the newClass() method within your factory class.
+
+Example Class ProfileData (Notice the constructor)
+
+```php
+<?php
+
+namespace BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples;
+
+use BeneathTheSurfaceLabs\UniversalFactory\Traits\HasUniversalFactory;
+
+class ProfileData
+{
+    use HasUniversalFactory;
+
+    public ?string $facebookProfileUrl;
+    public ?string $facebookAvatarUrl;
+    public ?string $twitterProfileUrl;
+    public ?string $twitterAvatarUrl;
+    public ?string $gitHubProfileUrl;
+    public ?string $githubAvatarUrl;
+    public ?string $personalUrl;
+
+    public function __construct(array $profileData)
+    {
+        $this->facebookProfileUrl = $profileData['facebookProfileUrl'] ?? null;
+        $this->facebookAvatarUrl = $profileData['facebookAvatarUrl'] ?? null;
+        $this->twitterProfileUrl = $profileData['twitterProfileUrl'] ?? null;
+        $this->twitterAvatarUrl = $profileData['twitterAvatarUrl'] ?? null;
+        $this->gitHubProfileUrl = $profileData['gitHubProfileUrl'] ?? null;
+        $this->githubAvatarUrl = $profileData['githubAvatarUrl'] ?? null;
+        $this->personalUrl = $profileData['personalUrl'] ?? null;
+    }
+}
+
+```
+
+Example Factory Class ProfileDataFactory (Sets Array Based Construction)
+
+```php
+<?php
+
+namespace BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples;
+
+use Illuminate\Support\Str;
+use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
+use BeneathTheSurfaceLabs\UniversalFactory\Enum\ClassConstructionStrategy;
+
+class ProfileDataFactory extends UniversalFactory
+{
+    protected ClassConstructionStrategy $classConstructionStrategy = ClassConstructionStrategy::ARRAY_BASED;
+
+    /**
+     * Define the class's default attributes.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'facebookProfileUrl' => fake()->url(),
+            'facebookAvatarUrl' => fake()->imageUrl(),
+            'twitterProfileUrl' => fake()->url(),
+            'twitterAvatarUrl' => fake()->imageUrl(),
+            'gitHubProfileUrl' => fake()->url(),
+            'githubAvatarUrl' => fake()->imageUrl(),
+            'personalUrl' => fake()->url(),
+        ];
+    }
+
+    public function withProfileFor(UserInfo $userInfo): self
+    {
+        $usernameGenerator = function (UserInfo $userInfo) {
+            $method = fake()->boolean() ? 'slug' : 'studly';
+
+            return Str::$method(
+                $userInfo->name,
+                fake()->randomElement(['-', '_', '.']).
+                (fake()->boolean() ? $userInfo->birthday->format(fake()->randomElement(['Y', 'y', 'my'])) : ''),
+
+            );
+        };
+
+        $urls = [
+            'facebook' => 'https://facebook.com/'.$usernameGenerator($userInfo),
+            'twitter' => 'https://x.com/'.$usernameGenerator($userInfo),
+            'github' => 'https://github.com/'.$usernameGenerator($userInfo),
+            'personal' => 'https://'.Str::slug($userInfo->name).'.com/',
+        ];
+
+        return $this->state(function (array $attributes) use ($urls) {
+            $attributes['facebookProfileUrl'] = $urls['facebook'];
+            $attributes['twitterProfileUrl'] = $urls['twitter'];
+            $attributes['gitHubProfileUrl'] = $urls['github'];
+            $attributes['personalUrl'] = $urls['personal'];
+
+            return $attributes;
+        });
+    }
+}
+```
+
+Example newClass() Override
+
+```php
+public function newClass(array $attributes = [])
+{
+    return MyCustomClass::fromUserId($attributes['user_id']);
+}
+```
+
 ## Testing
 
+To run the test suite, run the following: 
 ```bash
 composer test
 ```
@@ -204,13 +330,13 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
-## Security Vulnerabilities
+## Issues & Security Vulnerabilities
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+Please submit any issues (installation, usage, security, etc.) using the [GitHub Issues](https://github.com/BeneathTheSurfaceLabs/universal-factory/issues) tab above.
 
 ## Credits
 
-- [Nick Poulos](https://github.com/BeneathTheSurfaceLabs)
+- [Nick Poulos](https://github.com/nickpoulos)
 - [All Contributors](../../contributors)
 
 ## License

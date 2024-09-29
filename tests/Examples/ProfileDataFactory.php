@@ -2,11 +2,14 @@
 
 namespace BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples;
 
+use BeneathTheSurfaceLabs\UniversalFactory\Enum\ClassConstructionStrategy;
 use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
 use Illuminate\Support\Str;
 
 class ProfileDataFactory extends UniversalFactory
 {
+    protected ClassConstructionStrategy $classConstructionStrategy = ClassConstructionStrategy::ARRAY_BASED;
+
     /**
      * Define the class's default attributes.
      *
