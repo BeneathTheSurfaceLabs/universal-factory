@@ -247,6 +247,7 @@ abstract class UniversalFactory
      * @return TClass
      *
      * @throws BindingResolutionException
+     * @throws \ReflectionException
      */
     public function newClass(array $attributes = [])
     {
@@ -255,7 +256,26 @@ abstract class UniversalFactory
         return match ($this->classConstructionStrategy) {
             ClassConstructionStrategy::ARRAY_BASED => new $class($attributes),
             ClassConstructionStrategy::CONTAINER_BASED => app()->makeWith($class, $attributes),
+            ClassConstructionStrategy::REFLECTION_BASED => new $class(...$this->resolveClassParameters($class, $attributes)),
         };
+    }
+
+    /**
+     * Resolve parameters for the class constructor from the given attributes.
+     *
+     * @param  class-string<TClass>  $class
+     * @param  array<string, mixed>  $attributes
+     * @return array<int, mixed>
+     *
+     * @throws \ReflectionException
+     */
+    protected function resolveClassParameters(string $class, array $attributes): array
+    {
+        $constructor = (new \ReflectionClass($class))->getConstructor();
+
+        return collect($constructor->getParameters())
+            ->map(fn ($param) => $attributes[$param->getName()] ?? null)
+            ->all();
     }
 
     /**

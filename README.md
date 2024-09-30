@@ -202,7 +202,9 @@ This package supports a few common strategies to instruct your factory how to co
 
 By default, this package will use the `ClassConstructionStrategy::CONTAINER_BASED` strategy, which takes advantage of the Laravel container to attempt to construct your class.  
 
-The other strategy assumes your class constructor takes an array of parameters, which will map to your class properties. This is similar to how Eloquent models or Laravel Data classes are constructed.
+Another, `ClassConstructionStrategy::REFLECTION_BASED`, uses PHP's Reflection classes to examine your class, and directly set the parameters it is able to inspect. 
+
+The last strategy, `ClassConstructionStrategy::ARRAY_BASED`, assumes your class constructor takes an array of parameters, which will map to your class properties. This is similar to how Eloquent models are constructed.
 
 Of course, if your class requires something more custom or complex to be constructed, you can easily override the newClass() method within your factory class.
 

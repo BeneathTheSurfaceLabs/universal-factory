@@ -1,5 +1,6 @@
 <?php
 
+use BeneathTheSurfaceLabs\UniversalFactory\Enum\ClassConstructionStrategy;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileData;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\ProfileDataFactory;
 use BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo;
@@ -128,4 +129,18 @@ test('Can Set A Custom Method Name For Universal Factory', function () {
     Config::set('universal-factory.method_name', 'fake');
     $factory = UserInfo::fake();
     expect($factory)->toBeInstanceOf(UserInfoFactory::class);
+});
+
+test('Can Use Reflection To Construct Class', function () {
+    $factory = UserInfo::factory()->useConstructionStrategy(ClassConstructionStrategy::REFLECTION_BASED);
+    $result = $factory->make();
+    expect($result)->toBeInstanceOf(UserInfo::class);
+    expect($result->age)->toBeBetween(21, 40);
+    expect($result->name)->toBeString();
+    expect(Str::of($result->email)->contains('@'))->toBeTrue();
+    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+    expect($result->profileData)->toBeInstanceOf(ProfileData::class);
+    expect($result->profileData->facebookProfileUrl)->toContain('https://facebook.com/');
+    expect($result->profileData->twitterProfileUrl)->toContain('https://x.com/');
+    expect($result->profileData->gitHubProfileUrl)->toContain('https://github.com/');
 });
