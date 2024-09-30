@@ -220,7 +220,7 @@ abstract class UniversalFactory
                 if (
                     is_callable($attribute) &&
                     ! is_string($attribute) &&
-                    ! is_array($attribute)  &&
+                    ! is_array($attribute) &&
                     ! enum_exists(is_object($attribute) ? get_class($attribute) : '')
                 ) {
                     $attribute = $attribute($definition);
