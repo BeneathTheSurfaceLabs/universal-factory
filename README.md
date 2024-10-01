@@ -136,7 +136,7 @@ class UserInfoFactory extends UniversalFactory
        
        \BeneathTheSurfaceLabs\UniversalFactory\Tests\Examples\UserInfo
      */ 
-    protected $class = UserInfo::class;
+    protected ?string $class = UserInfo::class;
 
     /**
      * Define the class's default attributes.
@@ -258,11 +258,6 @@ class ProfileDataFactory extends UniversalFactory
 {
     protected ClassConstructionStrategy $classConstructionStrategy = ClassConstructionStrategy::ARRAY_BASED;
 
-    /**
-     * Define the class's default attributes.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
@@ -285,7 +280,6 @@ class ProfileDataFactory extends UniversalFactory
                 $userInfo->name,
                 fake()->randomElement(['-', '_', '.']).
                 (fake()->boolean() ? $userInfo->birthday->format(fake()->randomElement(['Y', 'y', 'my'])) : ''),
-
             );
         };
 
