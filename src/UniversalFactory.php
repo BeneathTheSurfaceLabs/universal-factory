@@ -21,21 +21,38 @@ abstract class UniversalFactory
      *
      * @var class-string<TClass>|null
      */
-    protected $class;
+    protected ?string $class;
 
+    /**
+     * Strategy for constructing your class objects
+     */
     protected ClassConstructionStrategy $classConstructionStrategy = ClassConstructionStrategy::CONTAINER_BASED;
 
+    /**
+     * Keeps track of the number of class instances to make
+     */
     protected ?int $count = null;
 
+    /**
+     * Keep track of the states to apply to the generated class
+     */
     protected Collection $states;
 
+    /**
+     * Keep track of the callbacks to apply to the generated class after it is made
+     */
     protected Collection $afterMaking;
 
     protected Collection $recycle;
 
+    /**
+     * Instance of the faker class
+     */
     protected Faker $faker;
 
     /**
+     * Default namespace for factory classes
+     *
      * @var string
      */
     public static $namespace = 'App\\Factories\\';
@@ -88,7 +105,7 @@ abstract class UniversalFactory
      *
      * @param  (callable(array<string, mixed>): array<string, mixed>)|array<string, mixed>  $attributes
      */
-    public static function new($attributes = []): static
+    public static function new(array|callable $attributes = []): static
     {
         return (new static)->state($attributes)->configure();
     }
@@ -113,8 +130,10 @@ abstract class UniversalFactory
      * Add a new state transformation to the model definition.
      *
      * @param  (callable(array<string, mixed>, TClass|null): array<string, mixed>)|array<string, mixed>  $state
+     *
+     * @throws BindingResolutionException
      */
-    public function state($state): static
+    public function state(array|callable $state): static
     {
         return $this->newInstance([
             'states' => $this->states->concat([
@@ -125,6 +144,9 @@ abstract class UniversalFactory
         ]);
     }
 
+    /**
+     * Add another callback to be called after the class is made.
+     */
     public function afterMaking(\Closure $callback): static
     {
         $this->afterMaking->push($callback);
@@ -134,6 +156,8 @@ abstract class UniversalFactory
 
     /**
      * Call the "after making" callbacks for the given model instances.
+     *
+     * @param  \Illuminate\Support\Collection<int, TClass>  $instances
      */
     protected function callAfterMaking(Collection $instances): void
     {
@@ -150,9 +174,9 @@ abstract class UniversalFactory
      * @param  (callable(array<string, mixed>): array<string, mixed>)|array<string, mixed>  $attributes
      * @return \Illuminate\Support\Collection<int, TClass>|TClass
      *
-     * @throws \ReflectionException
+     * @throws \ReflectionException|BindingResolutionException
      */
-    public function make($attributes = [])
+    public function make(array|callable $attributes = [])
     {
         if (! empty($attributes)) {
             return $this->state($attributes)->make();
@@ -176,7 +200,7 @@ abstract class UniversalFactory
      *
      * @return TClass
      *
-     * @throws \ReflectionException
+     * @throws \ReflectionException|BindingResolutionException
      */
     protected function makeInstance()
     {
@@ -208,6 +232,8 @@ abstract class UniversalFactory
 
     /**
      * Expand all attributes to their underlying values.
+     *
+     * @param  array<string, mixed>  $definition
      */
     protected function expandAttributes(array $definition): array
     {
@@ -235,6 +261,10 @@ abstract class UniversalFactory
 
     /**
      * Create a new instance of the factory builder with the given mutated properties.
+     *
+     * @param  array<string, mixed>  $arguments
+     *
+     * @throws BindingResolutionException
      */
     protected function newInstance(array $arguments = []): static
     {
@@ -359,7 +389,7 @@ abstract class UniversalFactory
      * @param  class-string<TClass>  $className
      * @return class-string<UniversalFactory<TClass>>
      */
-    public static function resolveFactoryName(string $className)
+    public static function resolveFactoryName(string $className): string
     {
         $resolver = static::$factoryNameResolver ?? function (string $className) {
             // Step 1: Use ReflectionClass to get the basename (without the namespace)
@@ -386,6 +416,9 @@ abstract class UniversalFactory
         return $resolver($className);
     }
 
+    /**
+     * Set the class construction strategy at runtime
+     */
     public function useConstructionStrategy(ClassConstructionStrategy $strategy): static
     {
         $this->classConstructionStrategy = $strategy;
@@ -395,10 +428,8 @@ abstract class UniversalFactory
 
     /**
      * Get the application namespace for the application.
-     *
-     * @return string
      */
-    protected static function appNamespace()
+    protected static function appNamespace(): string
     {
         try {
             return Container::getInstance()
