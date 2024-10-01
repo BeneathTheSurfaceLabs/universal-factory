@@ -6,7 +6,7 @@ use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
 
 class UserInfoFactory extends UniversalFactory
 {
-    protected $class = UserInfo::class;
+    protected ?string $class = UserInfo::class;
 
     /**
      * Define the class's default attributes.
