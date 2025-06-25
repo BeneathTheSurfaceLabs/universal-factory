@@ -2,6 +2,10 @@
 
 All notable changes to `universal-factory` will be documented in this file.
 
+## v1.2.3 - 2025-06-25
+
+Add support for Laravel 12.x
+
 ## v.1.1.0-beta - 2024-09-26
 
 This release adds the ability to configure a custom method name for the universal factory.
