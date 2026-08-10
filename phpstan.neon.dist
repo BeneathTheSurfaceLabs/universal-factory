@@ -9,3 +9,9 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
+    ignoreErrors:
+        # HasUniversalFactory is public API applied by consuming applications,
+        # so it is never used within the analysed paths.
+        -
+            identifier: trait.unused
+            path: src/Traits/HasUniversalFactory.php

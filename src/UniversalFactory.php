@@ -148,7 +148,7 @@ abstract class UniversalFactory
      * Create a collection of models.
      *
      * @param  (callable(array<string, mixed>): array<string, mixed>)|array<string, mixed>  $attributes
-     * @return \Illuminate\Support\Collection<int, TClass>|TClass
+     * @return Collection<int, TClass>|TClass
      *
      * @throws \ReflectionException
      */
@@ -332,7 +332,7 @@ abstract class UniversalFactory
      * Get a new factory instance for the given model name.
      *
      * @param  class-string<TClass>  $className
-     * @return \BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory<TClass>
+     * @return UniversalFactory<TClass>
      */
     public static function factoryForClass(string $className): UniversalFactory
     {
@@ -344,7 +344,7 @@ abstract class UniversalFactory
     /**
      * Get a new Faker instance.
      *
-     * @return \Faker\Generator
+     * @return Faker
      *
      * @throws BindingResolutionException
      */
