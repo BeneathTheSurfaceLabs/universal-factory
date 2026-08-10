@@ -5,7 +5,7 @@ namespace BeneathTheSurfaceLabs\UniversalFactory\Traits;
 use BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
 
 /**
- * @template TUniversalFactory of \BeneathTheSurfaceLabs\UniversalFactory\UniversalFactory;
+ * @template TUniversalFactory of UniversalFactory
  */
 trait HasUniversalFactory
 {
