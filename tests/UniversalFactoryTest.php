@@ -22,7 +22,7 @@ test('Can Make A New Class With Empty State', function () {
     expect($result->age)->toBeBetween(21, 40);
     expect($result->name)->toBeString();
     expect(Str::of($result->email)->contains('@'))->toBeTrue();
-    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+    expect($result->birthday)->toBeInstanceOf(DateTime::class);
     expect($result->profileData)->toBeInstanceOf(ProfileData::class);
     expect($result->profileData->facebookProfileUrl)->toContain('https://facebook.com/');
     expect($result->profileData->twitterProfileUrl)->toContain('https://x.com/');
@@ -40,7 +40,7 @@ test('Can Make Many New Classes With Empty State', function () {
         expect($result->age)->toBeBetween(21, 40);
         expect($result->name)->toBeString();
         expect(Str::of($result->email)->contains('@'))->toBeTrue();
-        expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+        expect($result->birthday)->toBeInstanceOf(DateTime::class);
     });
 });
 
@@ -51,7 +51,7 @@ test('Can Make A New Class With State Overrides via factory()', function () {
     expect($result->age)->toBeBetween(21, 40);
     expect($result->name)->toEqual('Eric Cartman');
     expect($result->email)->toEqual('eric@southparkcows.com');
-    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+    expect($result->birthday)->toBeInstanceOf(DateTime::class);
 });
 
 test('Can Make A New Class With State Overrides via make()', function () {
@@ -61,7 +61,7 @@ test('Can Make A New Class With State Overrides via make()', function () {
     expect($result->age)->toBeBetween(21, 40);
     expect($result->name)->toEqual('Eric Cartman');
     expect($result->email)->toEqual('eric@southparkcows.com');
-    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+    expect($result->birthday)->toBeInstanceOf(DateTime::class);
 });
 
 test('Can Make A Many New Classes With State Overrides via factory()', function () {
@@ -73,7 +73,7 @@ test('Can Make A Many New Classes With State Overrides via factory()', function 
         expect($result->age)->toBeBetween(21, 40);
         expect($result->name)->toEqual('Eric Cartman');
         expect($result->email)->toEqual('eric@southparkcows.com');
-        expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+        expect($result->birthday)->toBeInstanceOf(DateTime::class);
     });
 });
 
@@ -86,7 +86,7 @@ test('Can Make A Many New Classes With State Overrides via make()', function () 
         expect($result->age)->toBeBetween(21, 40);
         expect($result->name)->toEqual('Eric Cartman');
         expect($result->email)->toEqual('eric@southparkcows.com');
-        expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+        expect($result->birthday)->toBeInstanceOf(DateTime::class);
     });
 });
 
@@ -138,7 +138,7 @@ test('Can Use Reflection To Construct Class', function () {
     expect($result->age)->toBeBetween(21, 40);
     expect($result->name)->toBeString();
     expect(Str::of($result->email)->contains('@'))->toBeTrue();
-    expect($result->birthday)->toBeInstanceOf(\DateTime::class);
+    expect($result->birthday)->toBeInstanceOf(DateTime::class);
     expect($result->profileData)->toBeInstanceOf(ProfileData::class);
     expect($result->profileData->facebookProfileUrl)->toContain('https://facebook.com/');
     expect($result->profileData->twitterProfileUrl)->toContain('https://x.com/');
